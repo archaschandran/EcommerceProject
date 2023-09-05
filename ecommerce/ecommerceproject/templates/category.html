@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metadescription %}
+      {% if category %}
+           {{category.description|truncatewords:155}}
+      {% else %}
+           Welcome to Our Cart where you can buy whatever you want
+      {% endif %}
+{% endblock %}
+
+{% block title %}
+       {% if category %}
+           {{ category.name }} - Our Cart
+       {% else %}
+           See our New Collections - Our Cart
+       {% endif %}
+{% endblock %}
+{% block content %}
+
+{% if category %}
+       <div>
+           <div class="row my_row_class">
+               <div class="mx-auto">
+                   <p><a href="{% url 'shop:allProdCat' %}">Our Product Collections</a></p>
+               <!--the above url is guiding to home page http://127.0.0.1:8000/-->
+               </div>
+           </div>
+       </div>
+{% endif %}
+<div class="mx_auto">
+    {% if category %}
+       <img class="my_image" src="{{category.image.url}}" alt="{{category.name}}" width=200px;" height="200px;">
+</div>
+<br>
+<div>
+    <h1 class="text-center my_title">{{category.name}}</h1>
+    <p class="text-justify">{{category.description}}</p>
+</div>
+    {% else %}
+         <div>
+             <img class="my_image my_image_padding" src="{%static 'img/banner.png' %}" alt="our products" width="1250px;" height="400px;">
+         </div><br>
+         <div>
+             <h1 class="text-center my_title">Our products collections</h1>
+             <p class="text-justify">Aroma is having 50 years of existence in the field of fragrance.A new perfume for every moment.Here discover your new signature scent.Aroma is a companion that helps you to explore the world of fragrance!!!</p>
+         </div>
+    {% endif %}
+<br>
+<div class="container">
+    <div class="row mx-auto">
+        {% for product in products.object_list %}
+        <div class="my_bottom_margin col-9 col-sm-12 col-md-4 col-lg-4">
+            <div class="card text-center" style="min-width:10rem;">
+                <a href="{{product.get_url}}"><img class="card-img-top my_image" src="{{product.image.url}}" alt="{{product.name}}" width="200px;" height="200px;"></a>
+            <div class="card-body">
+               <h4>{{product.name}}</h4>
+                <p>{{product.price}}</p>
+            </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div><br>
+    <div class="mx-auto">
+        {% if products.paginator.num_pages > 1 %} <!--if the last page is greater than 1 then only show the page numbers,otherwise no need to show page number -->
+
+        <hr>
+        <div class="text-center">
+            {% for pg in products.paginator.page_range %}
+                 <a href="?page={{pg}}" class="btn btn-light btn-sm {% if products.number == pg %} active {% endif %}">{{pg}}</a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    <br>
+</div>
+{% endblock %}
